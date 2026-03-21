@@ -1,70 +1,116 @@
-# student: CB018092 
 # date: 2025/12/11
 # topic: Iterative Control Structures
 
-print("====================")
-print("Welcome to the game")
-print("====================")
-totalPlayers = int(input("How many players:"))
-multiple = int(input("Bus on which multiple:"))
+def doRound(player,round,multiple):
+    """
+    This is a function to check round answer against player answer
 
-# remainng player counter
-playrCount = totalPlayers
+    Args:
+        player: current round player
+        round: the round the game is currently on 
+        multiple: the multiple the bus value is checked upon
 
-# round counter
-i = 1
+    returns:
+        int: 1 - correct | 0 - incorrect | -1 - invalid 
+    """
+    try:
+        ans = input(f"player {player} answer:")
 
-#get of list of players
-players = list(range(1, playrCount+1))
+        if(ans != 'bus'):
+            try:
+                int(ans)
+            except ValueError as e:
+                raise(ValueError)
+        
+        #set round answer
+        round_ans = "bus" if (round % multiple == 0) else str(round)
+        
+        if(ans == round_ans):
+            return 1
+        else:
+            return 0;
 
-if(totalPlayers>=2):
+    except ValueError as e:
+        print("Error:","Please Enter round asnwer correctly\n('bus' or value as integer)")
+
+    return -1
+
+def getGameData():
+    """
+    This is a function to get game data from the player
+
+    Args:
+        none
+
+    Returns:
+        values:both values as a list or -1 if error
+    """
+    try:
+        totalPlayers = int(input("How many players:"))
+        multiple = int(input("Bus on which multiple:"))
+
+        if(totalPlayers<2):
+            print("At least 2 players are needed")
+        elif(multiple<2):
+            print("At least a multiplier of 2 is required")
+        else:
+            return [totalPlayers,multiple]
     
-    #main loop8
-    while(playrCount>0):
-        for player in range(totalPlayers):
+    except ValueError as e:
+        print("Error:","Please correctly enter values for the game data")
+    
+    return -1
 
+def main():
+    print("====================")
+    print("Welcome to the game")
+    print("====================")
+    
+    # number of player, the multiple
+    gameData = getGameData()
+
+    if(gameData!=-1):
+        # round counter
+        i = 1
+
+        #get of list of players
+        players = list(range(1, gameData[0]+1))
+
+        #main loop
+        while(len(players)>0):
             #find the player who won
-            if(playrCount==1):
-                for c in range(totalPlayers):
-                    if players[c]!=0:
-                        print("=============================")
-                        print(f"Player {players[c]} Wins!")
-
-                # Set main loop end
-                playrCount = 0
-
-            # break main loop
-            if(playrCount==0):
+            if(len(players)==1):
+                print("=============================")
+                print(f"Player {players[0]} Wins!")
                 break
 
+            player = players[(i//len(players)) // gameData[0]]
+
             #if player is out of game, proceed to next player
-            if players[player]==0:
+            if player not in players:
                 continue 
 
-            ans = input(f"player {players[player]} answer:")
+            round_ans = doRound(player,i,gameData[1])
 
-            #set round answer
-            round_ans = "bus"
-            if(i%multiple!=0):
-                round_ans=f"{i}"
-
-            if(ans == round_ans):
-                print("Correct !")
-
-            else:
-                print(f"Incorrect! Player {players[player]} lost!")
+            if(round_ans == 1):
+                print("Correct!")
+            elif(round_ans == 0):
+                print(f"Incorrect! Player {player} lost!")
 
                 # remove failed player from game
-                players[player]=0 
+                del players[players.index(player)]
 
-                # set amount of players left in game
-                playrCount = playrCount-1 
-
+                # starts the round off where the last person failed, remove if unnecessary
+                continue 
+            else:
                 # starts the round off where the last person failed, remove if unnecessary
                 continue 
 
             # set next round
             i = i+1 
-    print("Game Over!")
-else:
-    print("Need At least 2 players")
+
+        print("Game Over!")
+
+
+if __name__ == "__main__":
+    main()
