@@ -14,7 +14,7 @@ def doRound(player,round,multiple):
         int: 1 - correct | 0 - incorrect | -1 - invalid 
     """
     try:
-        ans = input(f"player {player} answer:")
+        ans = input(f"Player {player} answer:").lower()
 
         if(ans != 'bus'):
             try:
@@ -28,7 +28,7 @@ def doRound(player,round,multiple):
         if(ans == round_ans):
             return 1
         else:
-            return 0;
+            return 0
 
     except ValueError as e:
         print("Error:","Please Enter round asnwer correctly\n('bus' or value as integer)")
@@ -48,6 +48,7 @@ def getGameData():
     try:
         totalPlayers = int(input("How many players:"))
         multiple = int(input("Bus on which multiple:"))
+        print()
 
         if(totalPlayers<2):
             print("At least 2 players are needed")
@@ -62,9 +63,10 @@ def getGameData():
     return -1
 
 def main():
-    print("====================")
-    print("Welcome to the game")
-    print("====================")
+    print("=========")
+    print("Bus Game")
+    print("=========")
+    print()
     
     # number of player, the multiple
     gameData = getGameData()
@@ -80,25 +82,23 @@ def main():
         while(len(players)>0):
             #find the player who won
             if(len(players)==1):
-                print("=============================")
+                print("================")
                 print(f"Player {players[0]} Wins!")
                 break
+                
+            player_index = (i%len(players))
 
-            player = players[(i//len(players)) // gameData[0]]
-
-            #if player is out of game, proceed to next player
-            if player not in players:
-                continue 
-
-            round_ans = doRound(player,i,gameData[1])
+            round_ans = doRound(players[player_index],i,gameData[1])
 
             if(round_ans == 1):
                 print("Correct!")
+                print()
             elif(round_ans == 0):
-                print(f"Incorrect! Player {player} lost!")
+                print(f"Incorrect! Player {players[player_index]} lost!")
+                print()
 
                 # remove failed player from game
-                del players[players.index(player)]
+                del players[player_index]
 
                 # starts the round off where the last person failed, remove if unnecessary
                 continue 
@@ -114,3 +114,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
