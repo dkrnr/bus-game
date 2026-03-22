@@ -1,6 +1,3 @@
-# date: 2025/12/11
-# topic: Iterative Control Structures
-
 def doRound(player,round,multiple):
     """
     This is a function to check round answer against player answer
@@ -28,6 +25,7 @@ def doRound(player,round,multiple):
         if(ans == round_ans):
             return 1
         else:
+            # print("Round Ans:",round_ans)
             return 0
 
     except ValueError as e:
@@ -80,13 +78,14 @@ def main():
 
         #main loop
         while(len(players)>0):
+            
             #find the player who won
             if(len(players)==1):
                 print("================")
                 print(f"Player {players[0]} Wins!")
                 break
-                
-            player_index = (i%len(players))
+            
+            player_index = (i%(gameData[0]))-1
 
             round_ans = doRound(players[player_index],i,gameData[1])
 
@@ -95,11 +94,18 @@ def main():
                 print()
             elif(round_ans == 0):
                 print(f"Incorrect! Player {players[player_index]} lost!")
-                print()
-
+            
                 # remove failed player from game
                 del players[player_index]
 
+                # display remaining players (skips if 1 player becoz the game will end next round)
+                if(len(players)>1):
+                    print("\nRemaining players")
+                    for ply in players:
+                        print(f"> Player {ply}")
+                          
+                print()
+                
                 # starts the round off where the last person failed, remove if unnecessary
                 continue 
             else:
@@ -107,11 +113,10 @@ def main():
                 continue 
 
             # set next round
-            i = i+1 
+            i += 1 
 
         print("Game Over!")
 
 
 if __name__ == "__main__":
     main()
-
